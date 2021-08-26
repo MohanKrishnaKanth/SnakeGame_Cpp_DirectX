@@ -7,6 +7,7 @@
 #include "Board.h"
 #include "Snake.h"
 #include "Food.h"
+#include "FrameTimer.h"
 
 class Game
 {
@@ -34,12 +35,11 @@ private:
 	std::default_random_engine rng;
 
 	Food food;
-	int snakeMovementPerFrame = 30;
-	int snakeMovementPeriod = 0;
-
-	int snakeSpeedIncrement = 0;
-	static constexpr int snakeSpeedPerFrame = 180;
-	
+	FrameTimer ft;
+	float snakeMovementCounter = 0.0; // nanoseconds b/w frames are added as deltatime
+	float snakeMovementPeriod = 0.5f; // condition for after how many nanoseconds are added per one second, we need 2 movements per second so 0.5f
+	float snakeMovementPeriodMin = 0.06f; //we decrease the condition to speed up the snake so, the min of this number will make max speed
+	float speedUpFactor = 0.025f; // we change the speedup by adding this additional value
 
 	bool isGameover = false;
 	bool isGameStarted = false;

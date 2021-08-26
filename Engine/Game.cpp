@@ -24,6 +24,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	const float dt = ft.FrameDiff();
 	if (isGameStarted)
 	{
 		if (!isGameover)
@@ -51,10 +52,10 @@ void Game::UpdateModel()
 			}
 			
 
-			++snakeMovementPeriod;
-			if (snakeMovementPeriod >= snakeMovementPerFrame)
+			snakeMovementCounter += dt;
+			if (snakeMovementCounter>= snakeMovementPeriod)
 			{
-				snakeMovementPeriod = 0;
+				snakeMovementCounter = 0;
 
 				Location nextPredictLoc = snake.NextLocationPredict(delta_loc);
 
@@ -79,13 +80,7 @@ void Game::UpdateModel()
 				}
 			}
 
-			++snakeSpeedIncrement;
-			if (snakeSpeedIncrement > snakeSpeedPerFrame)
-			{
-				snakeSpeedIncrement = 0;
-				snakeMovementPerFrame = std::max(--snakeMovementPerFrame, 10);
-
-			}
+			snakeMovementPeriod = std::max(snakeMovementPeriod - dt * speedUpFactor, snakeMovementPeriodMin);
 
 		}
 	}
