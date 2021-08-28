@@ -8,6 +8,7 @@
 #include "Snake.h"
 #include "Food.h"
 #include "FrameTimer.h"
+#include "SoundEffect.h"
 
 class Game
 {
@@ -36,6 +37,11 @@ private:
 
 	Food food;
 	FrameTimer ft;
+	SoundEffect sfxEat = SoundEffect({ L"Sounds\\Eat.wav" });
+	Sound sndMusic = Sound(L"Sounds\\Music_Loop.wav", Sound::LoopType::AutoFullSound);
+	//Sound sndGameOver = Sound(L"Sounds\\Gameover.wav");
+
+
 	float snakeMovementCounter = 0.0; // nanoseconds b/w frames are added as deltatime
 	float snakeMovementPeriod = 0.5f; // condition for after how many nanoseconds are added per one second, we need 2 movements per second so 0.5f
 	float snakeMovementPeriodMin = 0.06f; //we decrease the condition to speed up the snake so, the min of this number will make max speed

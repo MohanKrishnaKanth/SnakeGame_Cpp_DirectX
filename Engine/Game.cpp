@@ -62,6 +62,8 @@ void Game::UpdateModel()
 				if (!brd.isCollided(nextPredictLoc) || snake.IsCollideItselfExceptTail(nextPredictLoc))
 				{
 					isGameover = true;
+					//sndGameOver.Play();
+					sndMusic.StopAll();
 				}
 				else
 				{
@@ -70,7 +72,7 @@ void Game::UpdateModel()
 					if (isEating)
 					{
 						snake.Grow();
-
+						sfxEat.Play(rng, 0.8f);
 					}
 					snake.MoveBy(delta_loc);
 					if (isEating)
@@ -87,7 +89,12 @@ void Game::UpdateModel()
 
 	else
 	{
-		isGameStarted = wnd.kbd.KeyIsPressed(VK_RETURN);
+		if (wnd.kbd.KeyIsPressed(VK_RETURN))
+		{
+			 sndMusic.Play(1.0f, 0.6f);
+			 isGameStarted = true;
+		}
+
 	}
 
 }
