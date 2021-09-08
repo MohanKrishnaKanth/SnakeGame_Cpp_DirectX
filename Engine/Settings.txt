@@ -5,4 +5,4 @@
 32 24
 
 [Snake SpeedFactor]
-0.05
+0.09
