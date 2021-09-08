@@ -62,7 +62,7 @@ bool Snake::IsCollideItselfExceptTail(const Location& delta_loc) const
 	return false;
 }
 
-bool Snake::CheckLocationForFood(const Location& loc) const
+bool Snake::CheckLocationToGenerate(const Location& loc) const
 {
 	for (int i = 0; i < currentSegment; ++i)
 	{
@@ -76,7 +76,7 @@ bool Snake::CheckLocationForFood(const Location& loc) const
 
 void Snake::Segment::Draw(Board& d)
 {
-	d.Draw(loc, c);
+	d.DrawCell(loc, c);
 }
 
 void Snake::Segment::InitHead(const Location& l)

@@ -33,7 +33,7 @@ public:
 	void Grow();
 	const Location NextLocationPredict(const Location& delta_loc) const;
 	bool IsCollideItselfExceptTail(const Location& delta_loc) const;
-	bool CheckLocationForFood(const Location& loc) const;
+	bool CheckLocationToGenerate(const Location& loc) const;
 	static constexpr Color headColor = Colors::Yellow;
 	static constexpr Color bodyColor = Colors::Green;
 };
