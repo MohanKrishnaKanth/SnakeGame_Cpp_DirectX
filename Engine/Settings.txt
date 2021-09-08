@@ -1,0 +1,8 @@
+[Cell Dimension]
+20
+
+[Board Dimension]
+32 24
+
+[Snake SpeedFactor]
+0.9
