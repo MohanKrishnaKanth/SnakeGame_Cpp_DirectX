@@ -141,9 +141,9 @@
     <ClInclude Include="CustomWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
-    <ClInclude Include="Food.h" />
     <ClInclude Include="FrameTimer.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Location.h" />
@@ -158,9 +158,9 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="DXErr.cpp" />
-    <ClCompile Include="Food.cpp" />
     <ClCompile Include="FrameTimer.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -236,6 +236,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="c++.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Settings.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

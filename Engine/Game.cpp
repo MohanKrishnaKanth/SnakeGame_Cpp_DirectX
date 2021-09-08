@@ -6,12 +6,12 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	brd(gfx),
+	brd(settings,gfx),
 	rng(std::random_device()()),
-	snake({ 10,10 }),
-	food(rng, brd, snake)
-
+	speedUpFactor(settings.GetSnakeSpeedFactor()),
+	snake({ 10,10 })
 {
+	brd.CreateCellType(Board::CellType::Food,snake,rng);
 }
 
 void Game::Go()
@@ -55,11 +55,11 @@ void Game::UpdateModel()
 			snakeMovementCounter += dt;
 			if (snakeMovementCounter>= snakeMovementPeriod)
 			{
-				snakeMovementCounter = 0;
+				snakeMovementCounter -= snakeMovementPeriod;
 
 				Location nextPredictLoc = snake.NextLocationPredict(delta_loc);
 
-				if (!brd.isCollided(nextPredictLoc) || snake.IsCollideItselfExceptTail(nextPredictLoc))
+				if (!brd.isCollided(nextPredictLoc) || snake.IsCollideItselfExceptTail(nextPredictLoc) ||brd.GetCellType(nextPredictLoc) == Board::CellType::Obstacle)
 				{
 					isGameover = true;
 					//sndGameOver.Play();
@@ -67,22 +67,34 @@ void Game::UpdateModel()
 				}
 				else
 				{
-					bool isEating = nextPredictLoc == food.GetLocation();
-
-					if (isEating)
+					bool foodTaken = brd.GetCellType(nextPredictLoc) == Board::CellType::Food;
+					bool poisonTaken = brd.GetCellType(nextPredictLoc) == Board::CellType::Poison;
+					if (foodTaken)
 					{
 						snake.Grow();
 						sfxEat.Play(rng, 0.8f);
+
 					}
 					snake.MoveBy(delta_loc);
-					if (isEating)
+					if (poisonTaken)
 					{
-						food.CreateNewFood(rng, brd, snake);
+						sfxEat.Play(rng, 0.8f);
+						brd.CellConsumed(nextPredictLoc);
+						snakeMovementPeriod = std::max(snakeMovementPeriod - speedUpFactor, snakeMovementPeriodMin);
 					}
+					if (foodTaken)
+					{
+						brd.CellConsumed(nextPredictLoc);
+						brd.CreateCellType(Board::CellType::Food,snake,rng);
+						brd.CreateCellType(Board::CellType::Obstacle,snake,rng);
+						brd.CreateCellType(Board::CellType::Poison,snake,rng);
+					}
+
+
+
+
 				}
 			}
-
-			snakeMovementPeriod = std::max(snakeMovementPeriod - dt * speedUpFactor, snakeMovementPeriodMin);
 
 		}
 	}
@@ -104,12 +116,12 @@ void Game::ComposeFrame()
 	if (isGameStarted)
 	{
 		snake.Draw(brd);
-		food.Draw(brd);
 		if (isGameover)
 		{
 			SpriteCode::DrawGameover(330, 230, gfx);
 		}
 		brd.DrawBorders();
+		brd.DrawCellTypes();
 	}
 	else
 	{
