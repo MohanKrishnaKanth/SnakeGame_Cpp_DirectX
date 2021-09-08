@@ -1,12 +1,18 @@
 #include "Board.h"
+#include "Snake.h"
 
-Board::Board(Graphics & gfx)
-	  :graphics(gfx)
+
+Board::Board(const GameSettings& settings,Graphics & gfx)
+		:width(settings.GetWidth()),
+		height(settings.GetHeight()),
+		dimension(settings.GetCellDimension()),
+		cellLocations(width * height, CellType::Empty),
+		graphics(gfx)
 {
 
 }
 
-void Board::Draw(const Location& loc, Color c)
+void Board::DrawCell(const Location& loc, Color c)
 {
 	assert(loc.x >= 0);
 	assert(loc.x < width);
@@ -58,7 +64,7 @@ void Board::DrawBorders()
 		topRight.x = right;
 		topRight.y = y + borderWidth;
 
-		graphics.DrawRectWithPoints(topLeft.x, topLeft.y, topRight.x, topRight.y,Colors::Gray);
+		graphics.DrawRectWithPoints(topLeft.x, topLeft.y, topRight.x, topRight.y,Colors::Blue);
 
 	}
 
@@ -77,7 +83,7 @@ void Board::DrawBorders()
 		bottomRight.x = right;
 		bottomRight.y = bottom;
 
-		graphics.DrawRectWithPoints(topRight.x, topRight.y, bottomRight.x, bottomRight.y, Colors::Gray);
+		graphics.DrawRectWithPoints(topRight.x, topRight.y, bottomRight.x, bottomRight.y, Colors::Blue);
 		
 	}
 
@@ -96,7 +102,7 @@ void Board::DrawBorders()
 		bottomLeft.x = x;
 		bottomLeft.y = bottom;
 
-		graphics.DrawRectWithPoints(topLeft.x, topLeft.y, bottomLeft.x, bottomLeft.y, Colors::Gray);
+		graphics.DrawRectWithPoints(topLeft.x, topLeft.y, bottomLeft.x, bottomLeft.y, Colors::Blue);
 
 	}
 
@@ -119,7 +125,69 @@ void Board::DrawBorders()
 		bottomRight.x = right;
 		bottomRight.y = bottom + borderWidth;
 
-		graphics.DrawRectWithPoints(bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y, Colors::Gray);
+		graphics.DrawRectWithPoints(bottomLeft.x, bottomLeft.y, bottomRight.x, bottomRight.y, Colors::Blue);
 
 	}
 }
+
+void Board::CreateCellType(CellType ct,const Snake& snake, std::default_random_engine& rng)
+{
+
+	std::uniform_int_distribution<int> xDist(0, GetBoardWidth() - 1);
+	std::uniform_int_distribution<int> yDist(0, GetBoardHeight() - 1);
+	Location l;
+	do
+	{
+		l = { xDist(rng),yDist(rng) };
+		
+	} while (snake.CheckLocationToGenerate(l) || GetCellType(l) != CellType::Empty);
+
+
+	cellLocations[l.y * width + l.x] = ct;
+
+}
+
+
+void Board::DrawCellTypes()
+{
+
+	for (int y = 0; y < height ; ++y)
+	{
+		for (int x = 0; x < width; ++x)
+		{
+			switch (GetCellType({x,y}))
+			{
+			case Board::Empty:
+				break;
+			case Board::Food:
+				DrawCell({ x,y }, Colors::Red);
+				break;
+			case Board::Poison:
+				DrawCell({ x,y }, { 64,8,64 });
+				break;
+			case Board::Obstacle:
+				DrawCell({ x,y }, Colors::LightGray);
+				break;
+			default:
+				break;
+			}
+
+
+			
+		}
+	}
+}
+
+
+
+void Board::CellConsumed(const Location & l)
+{
+	cellLocations[l.y * width + l.x] = CellType::Empty;
+}
+
+Board::CellType Board::GetCellType(const Location& l)  const
+{
+	return cellLocations[l.y * width + l.x];
+}
+
+
